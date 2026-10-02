@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BALSA ARCHITECTES -- Relev  de temps</title>
-<link href="https://fonts.googleapis.com/css2 family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>BALSA ARCHITECTES — Relevé de temps</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #1a1a1a; --ink-2: #4a4a4a; --ink-3: #8a8a8a;
@@ -189,15 +189,15 @@
     <div>
       <div class="section-label">Collaborateur</div>
       <div class="collab-grid" id="collab-grid"></div>
-      <input type="text" class="search-input" id="new-collab-input" placeholder="Nouveau collaborateur " style="margin-top:8px;" />
+      <input type="text" class="search-input" id="new-collab-input" placeholder="Nouveau collaborateur…" style="margin-top:8px;" />
     </div>
     <div class="separator"></div>
     <div>
       <div class="section-label">Projet</div>
-      <input type="text" class="search-input" id="project-search" placeholder="Rechercher un projet " oninput="filterProjects()" onfocus="showProjectList()" />
+      <input type="text" class="search-input" id="project-search" placeholder="Rechercher un projet…" oninput="filterProjects()" onfocus="showProjectList()" />
       <div class="project-list" id="project-list"></div>
       <div class="project-selected" id="project-selected"></div>
-      <input type="text" class="search-input" id="new-project-input" placeholder="Nom du nouveau projet " style="margin-top:6px;display:none;" />
+      <input type="text" class="search-input" id="new-project-input" placeholder="Nom du nouveau projet…" style="margin-top:6px;display:none;" />
     </div>
     <div class="separator"></div>
     <div>
@@ -205,7 +205,7 @@
       <div class="phase-type-tabs">
         <button class="type-tab active" onclick="setProjectType('complexe')">Complexe</button>
         <button class="type-tab" onclick="setProjectType('simple')">Simple</button>
-        <button class="type-tab" onclick="setProjectType('rehab')">R hab</button>
+        <button class="type-tab" onclick="setProjectType('rehab')">Réhab</button>
         <button class="type-tab" onclick="setProjectType('admin')">Admin</button>
       </div>
       <div class="section-label">Phase</div>
@@ -218,13 +218,13 @@
 
     <!-- BANNER affectation en attente -->
     <div class="assign-banner" id="assign-banner">
-        <strong>Timer en cours</strong> -- Affectez un projet et une phase avant d'arr ter, ou affectez maintenant.
+      ... <strong>Timer en cours</strong> — Affectez un projet et une phase avant d'arrêter, ou affectez maintenant.
     </div>
 
     <!-- TIMER -->
     <div class="timer-card">
       <div class="timer-top">
-        <div class="timer-context" id="timer-context">S lectionnez un collaborateur -- vous pourrez affecter le projet avant ou pendant le chrono</div>
+        <div class="timer-context" id="timer-context">Sélectionnez un collaborateur — vous pourrez affecter le projet avant ou pendant le chrono</div>
       </div>
       <div class="timer-display" id="timer-display">00:00:00</div>
       <div class="timer-status">
@@ -232,8 +232,8 @@
         <span id="status-text">En attente</span>
       </div>
       <div class="timer-actions">
-        <button class="btn-primary" id="main-btn" onclick="toggleTimer()">D marrer</button>
-        <button class="btn-secondary" onclick="resetTimer()">R initialiser</button>
+        <button class="btn-primary" id="main-btn" onclick="toggleTimer()">Démarrer</button>
+        <button class="btn-secondary" onclick="resetTimer()">Réinitialiser</button>
       </div>
     </div>
 
@@ -247,30 +247,30 @@
         </div>
       </div>
       <div id="entries-container">
-        <div class="empty-entries">Lance le timer pour d marrer le pointage</div>
+        <div class="empty-entries">Lance le timer pour démarrer le pointage</div>
       </div>
     </div>
 
     <div class="sync-bar" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="sync-dot"></div>
-        <span id="sync-status">Donn es sauvegard es localement</span>
+        <span id="sync-status">Données sauvegardées localement</span>
       </div>
       <div style="display:flex;gap:8px;">
-        <button id="btn-sheets" onclick="exportToSheets()" style="padding:6px 14px;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;">[tab] Envoyer vers Google Sheets</button>
+        <button id="btn-sheets" onclick="exportToSheets()" style="padding:6px 14px;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;">Envoyer vers Google Sheets Envoyer vers Google Sheets</button>
         <button onclick="exportCSVAll()" style="padding:6px 12px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);font-size:11px;cursor:pointer;color:var(--ink-3);font-family:'Inter',sans-serif;">Export CSV</button>
       </div>
     </div>
   </div>
 </div>
 
-<button class="admin-trigger" onclick="openLogin()">[cfg] Admin</button>
+<button class="admin-trigger" onclick="openLogin()">Admin Admin</button>
 
 <!-- SAISIE MANUELLE -->
 <div class="overlay" id="manual-overlay">
   <div class="manual-modal">
-    <h2>Saisie manuelle r troactive <span class="manual-tag">Historique</span></h2>
-    <div class="sub">Pour int grer du temps pass  les jours pr c dents -- feuilles papier, oublis, corrections.</div>
+    <h2>Saisie manuelle rétroactive <span class="manual-tag">Historique</span></h2>
+    <div class="sub">Pour intégrer du temps passé les jours précédents — feuilles papier, oublis, corrections.</div>
 
     <div class="mfield-row">
       <div class="mfield">
@@ -310,7 +310,7 @@
     </div>
 
     <div style="margin-top:20px;">
-      <div style="font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Saisies manuelles enregistr es</div>
+      <div style="font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Saisies manuelles enregistrées</div>
       <div class="manual-entries-list" id="manual-entries-list">
         <div style="padding:16px;text-align:center;color:var(--ink-3);font-size:12px;">Aucune saisie manuelle pour l'instant</div>
       </div>
@@ -321,10 +321,10 @@
 <!-- LOGIN -->
 <div class="overlay" id="login-overlay">
   <div class="login-modal">
-    <h2>Acc s administrateur</h2>
+    <h2>Accès administrateur</h2>
     <input type="password" id="admin-pwd" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')checkLogin()" />
     <div class="login-error" id="login-error">Mot de passe incorrect</div>
-    <button class="btn-primary" onclick="checkLogin()">Acc der</button>
+    <button class="btn-primary" onclick="checkLogin()">Accéder</button>
     <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="closeLogin()">Annuler</button>
   </div>
 </div>
@@ -332,12 +332,12 @@
 <!-- ADMIN -->
 <div class="overlay" id="admin-overlay">
   <div class="modal">
-    <h2>Panneau administrateur -- BALSA ARCHITECTES</h2>
+    <h2>Panneau administrateur — BALSA ARCHITECTES</h2>
     <div class="admin-section">
       <h3>Collaborateurs</h3>
       <div id="admin-collabs"></div>
       <div class="admin-add">
-        <input type="text" id="admin-new-collab" placeholder="Pr nom du nouveau collab" />
+        <input type="text" id="admin-new-collab" placeholder="Prénom du nouveau collab" />
         <button class="btn-add" onclick="adminAddCollab()">Ajouter</button>
       </div>
     </div>
@@ -345,7 +345,7 @@
       <h3>Projets</h3>
       <div id="admin-projects"></div>
       <div class="admin-add">
-        <input type="text" id="admin-new-project" placeholder="R f rence du nouveau projet" />
+        <input type="text" id="admin-new-project" placeholder="Référence du nouveau projet" />
         <button class="btn-add" onclick="adminAddProject()">Ajouter</button>
       </div>
     </div>
@@ -354,7 +354,7 @@
 </div>
 
 <script>
-//     DATA                                                                     
+// ─── DATA ────────────────────────────────────────────────────────────────────
 const DEFAULT_COLLABS = ['Camille','Maxence','Rosine'];
 const DEFAULT_PROJECTS = [
   '24-03_ERQUY_BOUJU','24-09_QUIMPER_API','24-12_DINAN_CADIEU ROUSSEAU',
@@ -366,45 +366,45 @@ const DEFAULT_PROJECTS = [
 ];
 const PHASES = {
   complexe: [
-    {id:'ESQ',label:'ESQ -- Esquisse'},
-    {id:'APS',label:'APS -- Avant-Projet Sommaire'},
-    {id:'APD',label:'APD -- Avant-Projet D finitif'},
-    {id:'PRO',label:'PRO -- Projet'},
-    {id:'DCE',label:'DCE -- Dossier Consultation'},
-    {id:'ACT',label:'ACT -- Assistance Contrats'},
-    {id:'EXE',label:'EXE -- Suivi chantier',sub:['EXE . Suivi financier','EXE . VISA / Planning / Bureau','EXE . R unions de chantier','EXE . D placements']},
-    {id:'AOR',label:'AOR -- R ception',sub:['AOR . Suivi financier','AOR . VISA / Planning / Bureau','AOR . R unions de chantier','AOR . D placements']},
+    {id:'ESQ',label:'ESQ — Esquisse'},
+    {id:'APS',label:'APS — Avant-Projet Sommaire'},
+    {id:'APD',label:'APD — Avant-Projet Définitif'},
+    {id:'PRO',label:'PRO — Projet'},
+    {id:'DCE',label:'DCE — Dossier Consultation'},
+    {id:'ACT',label:'ACT — Assistance Contrats'},
+    {id:'EXE',label:'EXE — Suivi chantier',sub:['EXE · Suivi financier','EXE · VISA / Planning / Bureau','EXE · Réunions de chantier','EXE · Déplacements']},
+    {id:'AOR',label:'AOR — Réception',sub:['AOR · Suivi financier','AOR · VISA / Planning / Bureau','AOR · Réunions de chantier','AOR · Déplacements']},
   ],
   simple: [
-    {id:'ESQ',label:'ESQ -- Esquisse'},
-    {id:'AVP',label:'AVP -- Avant-Projet (APS+APD)'},
-    {id:'PU',label:'PU -- Permis Urbanisme'},
-    {id:'DCE',label:'DCE -- Dossier Consultation'},
-    {id:'ACT',label:'ACT -- Assistance Contrats'},
-    {id:'EXE',label:'EXE -- Suivi chantier',sub:['EXE . Suivi financier','EXE . VISA / Planning / Bureau','EXE . R unions de chantier','EXE . D placements']},
-    {id:'AOR',label:'AOR -- R ception',sub:['AOR . Suivi financier','AOR . VISA / Planning / Bureau','AOR . R unions de chantier','AOR . D placements']},
+    {id:'ESQ',label:'ESQ — Esquisse'},
+    {id:'AVP',label:'AVP — Avant-Projet (APS+APD)'},
+    {id:'PU',label:'PU — Permis Urbanisme'},
+    {id:'DCE',label:'DCE — Dossier Consultation'},
+    {id:'ACT',label:'ACT — Assistance Contrats'},
+    {id:'EXE',label:'EXE — Suivi chantier',sub:['EXE · Suivi financier','EXE · VISA / Planning / Bureau','EXE · Réunions de chantier','EXE · Déplacements']},
+    {id:'AOR',label:'AOR — Réception',sub:['AOR · Suivi financier','AOR · VISA / Planning / Bureau','AOR · Réunions de chantier','AOR · Déplacements']},
   ],
   rehab: [
-    {id:'REL',label:'REL -- Relev s',sub:['REL . Visites site','REL . Relev s sur site','REL . Mise en plan bureau','REL . D placements']},
-    {id:'ESQ',label:'ESQ -- Esquisse'},
-    {id:'APS',label:'APS -- Avant-Projet Sommaire'},
-    {id:'APD',label:'APD -- Avant-Projet D finitif'},
-    {id:'PRO',label:'PRO -- Projet'},
-    {id:'DCE',label:'DCE -- Dossier Consultation'},
-    {id:'ACT',label:'ACT -- Assistance Contrats'},
-    {id:'EXE',label:'EXE -- Suivi chantier',sub:['EXE . Suivi financier','EXE . VISA / Planning / Bureau','EXE . R unions de chantier','EXE . D placements']},
-    {id:'AOR',label:'AOR -- R ception',sub:['AOR . Suivi financier','AOR . VISA / Planning / Bureau','AOR . R unions de chantier','AOR . D placements']},
+    {id:'REL',label:'REL — Relevés',sub:['REL · Visites site','REL · Relevés sur site','REL · Mise en plan bureau','REL · Déplacements']},
+    {id:'ESQ',label:'ESQ — Esquisse'},
+    {id:'APS',label:'APS — Avant-Projet Sommaire'},
+    {id:'APD',label:'APD — Avant-Projet Définitif'},
+    {id:'PRO',label:'PRO — Projet'},
+    {id:'DCE',label:'DCE — Dossier Consultation'},
+    {id:'ACT',label:'ACT — Assistance Contrats'},
+    {id:'EXE',label:'EXE — Suivi chantier',sub:['EXE · Suivi financier','EXE · VISA / Planning / Bureau','EXE · Réunions de chantier','EXE · Déplacements']},
+    {id:'AOR',label:'AOR — Réception',sub:['AOR · Suivi financier','AOR · VISA / Planning / Bureau','AOR · Réunions de chantier','AOR · Déplacements']},
   ],
   admin: [
     {id:'AO',label:'Appels d\'offres / Candidatures'},
-    {id:'RI',label:'R unions internes agence'},
+    {id:'RI',label:'Réunions internes agence'},
     {id:'VF',label:'Veille / Formation'},
     {id:'DIV',label:'Divers agence'},
   ]
 };
 const ADMIN_PWD = 'Pfcl1985';
 
-//     STATE                                                                    
+// ─── STATE ───────────────────────────────────────────────────────────────────
 let state = {
   collabs:[...DEFAULT_COLLABS], archivedCollabs:[],
   projects:[...DEFAULT_PROJECTS], archivedProjects:[],
@@ -417,14 +417,14 @@ let state = {
 function loadState() {
   try {
     const s = JSON.parse(localStorage.getItem('balsa_v2')||'{}');
-    // Fusionner : ajouter les nouveaux collabs par d faut si absents
+    // Fusionner : ajouter les nouveaux collabs par défaut si absents
     const saved = s.collabs || [];
     const merged = [...DEFAULT_COLLABS];
-    saved.forEach(c => { if(!merged.includes(c) && c !== 'Daphn ') merged.push(c); });
+    saved.forEach(c => { if(!merged.includes(c) && c !== 'Daphné') merged.push(c); });
     state.collabs = merged;
-    if(s.archivedCollabs) state.archivedCollabs = s.archivedCollabs.filter(c => c !== 'Daphn ');
+    if(s.archivedCollabs) state.archivedCollabs = s.archivedCollabs.filter(c => c !== 'Daphné');
     if(s.projects) {
-      // Fusionner projets sauvegard s + nouveaux par d faut
+      // Fusionner projets sauvegardés + nouveaux par défaut
       const savedP = s.projects;
       const mergedP = [...DEFAULT_PROJECTS];
       savedP.forEach(p => { if(!mergedP.includes(p)) mergedP.push(p); });
@@ -445,24 +445,24 @@ function saveState() {
       projects:state.projects, archivedProjects:state.archivedProjects,
       entries:state.entries
     }));
-    document.getElementById('sync-status').textContent = 'Sauvegard    ' + new Date().toLocaleTimeString('fr-FR');
+    document.getElementById('sync-status').textContent = 'Sauvegardé à ' + new Date().toLocaleTimeString('fr-FR');
   } catch(e){}
 }
 
-//     UTILS                                                                    
+// ─── UTILS ───────────────────────────────────────────────────────────────────
 const pad = n => String(n).padStart(2,'0');
 const fmtTime = s => pad(Math.floor(s/3600))+':'+pad(Math.floor((s%3600)/60))+':'+pad(s%60);
-const fmtDur = s => { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60); return h>0   h+'h '+pad(m)+'min' : m+'min '+pad(s%60)+'s'; };
+const fmtDur = s => { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60); return h>0 ? h+'h '+pad(m)+'min' : m+'min '+pad(s%60)+'s'; };
 
-//     INIT                                                                     
+// ─── INIT ────────────────────────────────────────────────────────────────────
 document.getElementById('header-date').textContent = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
-//     COLLABS                                                                  
+// ─── COLLABS ─────────────────────────────────────────────────────────────────
 function renderCollabs() {
   const g = document.getElementById('collab-grid'); g.innerHTML='';
   state.collabs.forEach(c => {
     const b = document.createElement('button');
-    b.className = 'collab-btn'+(state.selectedCollab===c ' active':'');
+    b.className = 'collab-btn'+(state.selectedCollab===c?' active':'');
     b.textContent = c; b.onclick = ()=>selectCollab(c); g.appendChild(b);
   });
 }
@@ -474,19 +474,19 @@ document.getElementById('new-collab-input').addEventListener('keydown',function(
   }
 });
 
-//     PROJECTS                                                                 
+// ─── PROJECTS ────────────────────────────────────────────────────────────────
 function renderProjectList() {
   const list=document.getElementById('project-list'),s=document.getElementById('project-search').value.toLowerCase();
   list.innerHTML='';
   const filtered=state.projects.filter(p=>p.toLowerCase().includes(s));
   if(filtered.length===0&&s.length>0) {
-    list.innerHTML='<div class="project-item" style="color:var(--ink-3)">Aucun projet -- tapez Entr e pour cr er</div>';
+    list.innerHTML='<div class="project-item" style="color:var(--ink-3)">Aucun projet — tapez Entrée pour créer</div>';
     document.getElementById('new-project-input').style.display='block';
-    document.getElementById('new-project-input').placeholder='Cr er : '+document.getElementById('project-search').value;
+    document.getElementById('new-project-input').placeholder='Créer : '+document.getElementById('project-search').value;
   } else {
     document.getElementById('new-project-input').style.display='none';
     filtered.forEach(p=>{
-      const d=document.createElement('div'); d.className='project-item'+(state.selectedProject===p ' selected':'');
+      const d=document.createElement('div'); d.className='project-item'+(state.selectedProject===p?' selected':'');
       d.textContent=p; d.onclick=()=>selectProject(p); list.appendChild(d);
     });
   }
@@ -509,7 +509,7 @@ document.getElementById('new-project-input').addEventListener('keydown',function
 });
 document.addEventListener('click',function(e){ if(!e.target.closest('.left-panel')) document.getElementById('project-list').style.display='none'; });
 
-//     PHASES                                                                   
+// ─── PHASES ──────────────────────────────────────────────────────────────────
 function setProjectType(t) {
   state.projectType=t; state.selectedPhase=null;
   document.querySelectorAll('.type-tab').forEach((b,i)=>b.classList.toggle('active',['complexe','simple','rehab','admin'][i]===t));
@@ -521,30 +521,30 @@ function renderPhases() {
     if(ph.sub){
       const lbl=document.createElement('div'); lbl.className='phase-parent-label'; lbl.textContent=ph.label; g.appendChild(lbl);
       ph.sub.forEach(s=>{
-        const b=document.createElement('button'); b.className='phase-item sub'+(state.selectedPhase===s ' active':'');
+        const b=document.createElement('button'); b.className='phase-item sub'+(state.selectedPhase===s?' active':'');
         b.textContent=s; b.onclick=()=>selectPhase(s); g.appendChild(b);
       });
     } else {
-      const b=document.createElement('button'); b.className='phase-item'+(state.selectedPhase===ph.id ' active':'');
+      const b=document.createElement('button'); b.className='phase-item'+(state.selectedPhase===ph.id?' active':'');
       b.textContent=ph.label; b.onclick=()=>selectPhase(ph.id); g.appendChild(b);
     }
   });
 }
 function selectPhase(id) { state.selectedPhase=id; renderPhases(); updateContext(); updateBanner(); }
 
-//     CONTEXT                                                                  
+// ─── CONTEXT ─────────────────────────────────────────────────────────────────
 function updateContext() {
   const ctx=document.getElementById('timer-context');
   if(!state.selectedCollab&&!state.selectedProject&&!state.selectedPhase){
-    ctx.innerHTML='S lectionnez un collaborateur -- vous pourrez affecter le projet avant ou pendant le chrono'; return;
+    ctx.innerHTML='Sélectionnez un collaborateur — vous pourrez affecter le projet avant ou pendant le chrono'; return;
   }
   let parts=[];
   if(state.selectedCollab) parts.push('<strong>'+state.selectedCollab+'</strong>');
   if(state.selectedProject) parts.push(state.selectedProject);
-  else if(state.running) parts.push('<span class="ctx-pending">[!] Projet non affect </span>');
+  else if(state.running) parts.push('<span class="ctx-pending">! Projet non affecté</span>');
   if(state.selectedPhase) parts.push(state.selectedPhase);
-  else if(state.running&&state.selectedProject) parts.push('<span class="ctx-pending">[!] Phase non affect e</span>');
-  ctx.innerHTML = parts.join(' &nbsp;.&nbsp; ');
+  else if(state.running&&state.selectedProject) parts.push('<span class="ctx-pending">! Phase non affectée</span>');
+  ctx.innerHTML = parts.join(' &nbsp;·&nbsp; ');
 }
 
 function updateBanner() {
@@ -552,21 +552,21 @@ function updateBanner() {
   b.classList.toggle('show', state.running && (!state.selectedProject||!state.selectedPhase));
 }
 
-//     TIMER                                                                    
+// ─── TIMER ───────────────────────────────────────────────────────────────────
 function toggleTimer() {
   if(!state.running) {
-    if(!state.selectedCollab){ alert('S lectionnez un collaborateur.'); return; }
+    if(!state.selectedCollab){ alert('Sélectionnez un collaborateur.'); return; }
     state.running=true; state.startTime=Date.now();
     state.interval=setInterval(tickTimer,1000);
-    document.getElementById('main-btn').textContent='Arr ter';
+    document.getElementById('main-btn').textContent='Arrêter';
     document.getElementById('main-btn').classList.add('stop');
     document.getElementById('status-dot').classList.add('running');
-    document.getElementById('status-text').textContent='En cours ';
+    document.getElementById('status-text').textContent='En cours…';
     document.getElementById('timer-display').classList.add('running');
     updateContext(); updateBanner();
   } else {
-    if(!state.selectedProject){ alert('Affectez un projet avant d\'arr ter.'); return; }
-    if(!state.selectedPhase){ alert('Affectez une phase avant d\'arr ter.'); return; }
+    if(!state.selectedProject){ alert('Affectez un projet avant d\'arrêter.'); return; }
+    if(!state.selectedPhase){ alert('Affectez une phase avant d\'arrêter.'); return; }
     stopTimer();
   }
 }
@@ -586,7 +586,7 @@ function stopTimer() {
   saveState(); renderEntries();
   document.getElementById('timer-display').textContent='00:00:00';
   document.getElementById('timer-display').classList.remove('running');
-  document.getElementById('main-btn').textContent='D marrer';
+  document.getElementById('main-btn').textContent='Démarrer';
   document.getElementById('main-btn').classList.remove('stop');
   document.getElementById('status-dot').classList.remove('running');
   document.getElementById('status-text').textContent='En attente';
@@ -598,7 +598,7 @@ function resetTimer() {
   if(state.running){ clearInterval(state.interval); state.running=false; state.elapsed=0; }
   document.getElementById('timer-display').textContent='00:00:00';
   document.getElementById('timer-display').classList.remove('running');
-  document.getElementById('main-btn').textContent='D marrer';
+  document.getElementById('main-btn').textContent='Démarrer';
   document.getElementById('main-btn').classList.remove('stop');
   document.getElementById('status-dot').classList.remove('running');
   document.getElementById('status-text').textContent='En attente';
@@ -606,23 +606,23 @@ function resetTimer() {
   updateContext();
 }
 
-//     ENTRIES                                                                  
+// ─── ENTRIES ─────────────────────────────────────────────────────────────────
 function renderEntries() {
   const c=document.getElementById('entries-container');
-  if(state.entries.length===0){ c.innerHTML='<div class="empty-entries">Lance le timer pour d marrer le pointage</div>'; return; }
+  if(state.entries.length===0){ c.innerHTML='<div class="empty-entries">Lance le timer pour démarrer le pointage</div>'; return; }
   const total=state.entries.reduce((s,e)=>s+e.secs,0);
   let html='';
   state.entries.forEach((e,i)=>{
     html+=`<div class="entry-row" id="erow-${i}">
       <div class="entry-left">
         <div class="entry-project">${e.project}</div>
-        <div class="entry-meta">${e.collab} &nbsp;.&nbsp; ${e.phase} &nbsp;.&nbsp; ${e.time}</div>
+        <div class="entry-meta">${e.collab} &nbsp;·&nbsp; ${e.phase} &nbsp;·&nbsp; ${e.time}</div>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span class="entry-duration">${fmtDur(e.secs)}</span>
         <div class="entry-actions">
           <button class="btn-sm" onclick="startEdit(${i})">Modifier</button>
-          <button class="btn-sm" onclick="startSplit(${i})">D couper</button>
+          <button class="btn-sm" onclick="startSplit(${i})">Découper</button>
           <button class="btn-sm danger" onclick="deleteEntry(${i})">Suppr.</button>
         </div>
       </div>
@@ -631,13 +631,13 @@ function renderEntries() {
       <div class="edit-row">
         <label>Projet</label>
         <select id="edit-proj-${i}">
-          ${state.projects.map(p=>`<option value="${p}" ${p===e.project 'selected':''}>${p}</option>`).join('')}
+          ${state.projects.map(p=>`<option value="${p}" ${p===e.project?'selected':''}>${p}</option>`).join('')}
         </select>
       </div>
       <div class="edit-row">
         <label>Phase</label>
         <select id="edit-phase-${i}">
-          ${getAllPhases().map(p=>`<option value="${p}" ${p===e.phase 'selected':''}>${p}</option>`).join('')}
+          ${getAllPhases().map(p=>`<option value="${p}" ${p===e.phase?'selected':''}>${p}</option>`).join('')}
         </select>
       </div>
       <div class="edit-actions">
@@ -646,7 +646,7 @@ function renderEntries() {
       </div>
     </div>
     <div class="split-form" id="split-${i}">
-      <div class="split-title">[/] D couper cette saisie de ${fmtDur(e.secs)}</div>
+      <div class="split-title">Decouper Découper cette saisie de ${fmtDur(e.secs)}</div>
       <div class="split-row"><label>Partie A (min)</label><input type="number" id="split-min-${i}" value="${Math.floor(e.secs/60/2)}" min="1" max="${Math.floor(e.secs/60)-1}" /></div>
       <div class="split-row"><label>Projet B</label>
         <select id="split-proj-${i}">${state.projects.map(p=>`<option value="${p}">${p}</option>`).join('')}</select>
@@ -655,7 +655,7 @@ function renderEntries() {
         <select id="split-phase-${i}">${getAllPhases().map(p=>`<option value="${p}">${p}</option>`).join('')}</select>
       </div>
       <div class="edit-actions">
-        <button class="btn-edit-save" onclick="saveSplit(${i})">D couper</button>
+        <button class="btn-edit-save" onclick="saveSplit(${i})">Découper</button>
         <button class="btn-edit-cancel" onclick="cancelSplit(${i})">Annuler</button>
       </div>
     </div>`;
@@ -705,13 +705,13 @@ function saveSplit(i) {
 }
 
 function deleteEntry(i) {
-  if(confirm('Supprimer cette saisie  ')){ state.entries.splice(i,1); saveState(); renderEntries(); }
+  if(confirm('Supprimer cette saisie ?')){ state.entries.splice(i,1); saveState(); renderEntries(); }
 }
 
-//     EXPORT                                                                   
+// ─── EXPORT ──────────────────────────────────────────────────────────────────
 function exportCSV() {
-  if(!state.entries.length){ alert('Aucune saisie   exporter.'); return; }
-  const h=['Date','Heure','Collaborateur','Projet','Phase','Dur e (min)','Dur e (hh:mm:ss)'];
+  if(!state.entries.length){ alert('Aucune saisie à exporter.'); return; }
+  const h=['Date','Heure','Collaborateur','Projet','Phase','Durée (min)','Durée (hh:mm:ss)'];
   const rows=state.entries.map(e=>{
     const d=new Date(e.timestamp);
     return [d.toLocaleDateString('fr-FR'),e.time,e.collab,e.project,e.phase,Math.round(e.secs/60),fmtTime(e.secs)].join(';');
@@ -723,7 +723,7 @@ function exportCSV() {
   a.click();
 }
 
-//     ADMIN                                                                    
+// ─── ADMIN ───────────────────────────────────────────────────────────────────
 function openLogin(){ document.getElementById('login-overlay').classList.add('open'); document.getElementById('admin-pwd').value=''; document.getElementById('login-error').style.display='none'; setTimeout(()=>document.getElementById('admin-pwd').focus(),100); }
 function closeLogin(){ document.getElementById('login-overlay').classList.remove('open'); }
 function checkLogin(){ if(document.getElementById('admin-pwd').value===ADMIN_PWD){ closeLogin(); openAdmin(); } else document.getElementById('login-error').style.display='block'; }
@@ -748,11 +748,11 @@ function adminAddProject(){ const v=document.getElementById('admin-new-project')
 
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyALrmQNM_Bb7bEc8bNqF4WiDEb_SQAiHFLizAhFSG-4POZWbts5PdzzUtfYvoeil7exQ/exec';
 
-//     EXPORT GOOGLE SHEETS                                                     
+// ─── EXPORT GOOGLE SHEETS ────────────────────────────────────────────────────
 async function sendToSheets(entries) {
   if(!entries.length) return {ok:false, msg:'Aucune saisie'};
   try {
-    // Apps Script depuis claude.ai n cessite no-cors + form data
+    // Apps Script depuis claude.ai nécessite no-cors + form data
     const rows = entries.map(e => {
       const d = new Date(e.timestamp);
       return [
@@ -763,7 +763,7 @@ async function sendToSheets(entries) {
         e.phase,
         Math.round(e.secs/60),
         fmtTime(e.secs),
-        e.manual   'Manuelle' : 'Timer'
+        e.manual ? 'Manuelle' : 'Timer'
       ].join('|');
     }).join(';;');
 
@@ -776,7 +776,7 @@ async function sendToSheets(entries) {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params.toString()
     });
-    // no-cors = pas de r ponse lisible, on consid re que c'est ok
+    // no-cors = pas de réponse lisible, on considère que c'est ok
     return { ok: true };
   } catch(err) {
     return { ok:false, msg: err.message };
@@ -791,22 +791,22 @@ async function exportToSheets() {
   const todayEntries = state.entries;
   const pastEntries = history.filter(e => new Date(e.timestamp).toDateString() !== today);
   const all = [...todayEntries, ...pastEntries];
-  if(!all.length){ alert('Aucune saisie   envoyer.'); return; }
-  btn.textContent = 'Envoi ';
+  if(!all.length){ alert('Aucune saisie à envoyer.'); return; }
+  btn.textContent = 'Envoi…';
   btn.disabled = true;
   btn.style.opacity = '0.7';
   const res = await sendToSheets(all);
   if(res.ok) {
-    btn.textContent = 'OK Envoy  !';
+    btn.textContent = 'OK Envoyé !';
     btn.style.background = 'var(--green)';
-    document.getElementById('sync-status').textContent = all.length + ' saisie(s) envoy e(s) vers Google Sheets -- ' + new Date().toLocaleTimeString('fr-FR');
-    setTimeout(()=>{ btn.textContent = '[tab] Envoyer vers Google Sheets'; btn.style.background=''; btn.style.opacity='1'; btn.disabled=false; }, 2500);
+    document.getElementById('sync-status').textContent = all.length + ' saisie(s) envoyée(s) vers Google Sheets — ' + new Date().toLocaleTimeString('fr-FR');
+    setTimeout(()=>{ btn.textContent = 'Envoyer vers Google Sheets Envoyer vers Google Sheets'; btn.style.background=''; btn.style.opacity='1'; btn.disabled=false; }, 2500);
   } else {
-    btn.textContent = '  Erreur -- r essayer';
+    btn.textContent = 'x Erreur — réessayer';
     btn.style.background = 'var(--red)';
     btn.style.opacity = '1';
     btn.disabled = false;
-    setTimeout(()=>{ btn.textContent = '[tab] Envoyer vers Google Sheets'; btn.style.background=''; }, 3000);
+    setTimeout(()=>{ btn.textContent = 'Envoyer vers Google Sheets Envoyer vers Google Sheets'; btn.style.background=''; }, 3000);
   }
 }
 function openManual() {
@@ -823,7 +823,7 @@ function openManual() {
   sph.innerHTML = getAllPhases().map(p=>`<option value="${p}">${p}</option>`).join('');
   if(state.selectedPhase) sph.value = state.selectedPhase;
 
-  // Date par d faut = aujourd'hui
+  // Date par défaut = aujourd'hui
   const today = new Date().toISOString().slice(0,10);
   document.getElementById('m-date').value = today;
   document.getElementById('m-date').max = today;
@@ -848,11 +848,11 @@ function saveManualEntry() {
   const m = parseInt(document.getElementById('m-minutes').value)||0;
   const secs = h*3600 + m*60;
 
-  if(!collab) { alert('S lectionnez un collaborateur.'); return; }
-  if(!dateVal) { alert('S lectionnez une date.'); return; }
-  if(!project) { alert('S lectionnez un projet.'); return; }
-  if(!phase) { alert('S lectionnez une phase.'); return; }
-  if(secs <= 0) { alert('Dur e invalide.'); return; }
+  if(!collab) { alert('Sélectionnez un collaborateur.'); return; }
+  if(!dateVal) { alert('Sélectionnez une date.'); return; }
+  if(!project) { alert('Sélectionnez un projet.'); return; }
+  if(!phase) { alert('Sélectionnez une phase.'); return; }
+  if(secs <= 0) { alert('Durée invalide.'); return; }
 
   const d = new Date(dateVal+'T12:00:00');
   const entry = {
@@ -862,7 +862,7 @@ function saveManualEntry() {
     manual: true
   };
 
-  // Si la date est aujourd'hui   ajouter aux entr es du jour
+  // Si la date est aujourd'hui → ajouter aux entrées du jour
   const todayStr = new Date().toDateString();
   if(d.toDateString() === todayStr) {
     state.entries.push(entry);
@@ -878,13 +878,13 @@ function saveManualEntry() {
   saveState();
   renderManualEntries();
 
-  // Reset dur e pour saisie suivante
+  // Reset durée pour saisie suivante
   document.getElementById('m-hours').value = 0;
   document.getElementById('m-minutes').value = 30;
 
   // Feedback visuel
   const btn = document.querySelector('.btn-manual-save');
-  btn.textContent = 'OK Enregistr  !';
+  btn.textContent = 'OK Enregistré !';
   btn.style.background = 'var(--green)';
   setTimeout(()=>{ btn.textContent = 'Enregistrer la saisie'; btn.style.background = ''; }, 1500);
 }
@@ -899,7 +899,7 @@ function renderManualEntries() {
     return;
   }
 
-  // Trier par date d croissante
+  // Trier par date décroissante
   history.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
   div.innerHTML = history.map((e,i) => {
     const d = new Date(e.timestamp);
@@ -907,11 +907,11 @@ function renderManualEntries() {
     return `<div class="manual-entry-item">
       <div>
         <div class="manual-entry-proj">${e.project}</div>
-        <div class="manual-entry-meta">${e.collab} . ${e.phase} . ${dateStr}</div>
+        <div class="manual-entry-meta">${e.collab} · ${e.phase} · ${dateStr}</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <span class="manual-entry-dur">${fmtDur(e.secs)}</span>
-        <button class="btn-sm danger" onclick="deleteManualEntry(${i})" style="font-size:10px;">x</button>
+        <button class="btn-sm danger" onclick="deleteManualEntry(${i})" style="font-size:10px;">✕</button>
       </div>
     </div>`;
   }).join('');
@@ -934,12 +934,12 @@ function exportCSVAll() {
     const today = new Date().toDateString();
     return new Date(e.timestamp).toDateString() !== today;
   })];
-  if(!all.length){ alert('Aucune saisie   exporter.'); return; }
+  if(!all.length){ alert('Aucune saisie à exporter.'); return; }
   all.sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
-  const h=['Date','Heure','Collaborateur','Projet','Phase','Dur e (min)','Dur e (hh:mm:ss)','Type'];
+  const h=['Date','Heure','Collaborateur','Projet','Phase','Durée (min)','Durée (hh:mm:ss)','Type'];
   const rows=all.map(e=>{
     const d=new Date(e.timestamp);
-    return [d.toLocaleDateString('fr-FR'),e.time||'(manuel)',e.collab,e.project,e.phase,Math.round(e.secs/60),fmtTime(e.secs),e.manual 'Manuelle':'Timer'].join(';');
+    return [d.toLocaleDateString('fr-FR'),e.time||'(manuel)',e.collab,e.project,e.phase,Math.round(e.secs/60),fmtTime(e.secs),e.manual?'Manuelle':'Timer'].join(';');
   });
   const csv=[h.join(';'),...rows].join('\n');
   const a=document.createElement('a');
@@ -948,14 +948,13 @@ function exportCSVAll() {
   a.click();
 }
 
-//     AUTO SAVE                                                                
+// ─── AUTO SAVE ───────────────────────────────────────────────────────────────
 setInterval(saveState, 30*60*1000);
 window.addEventListener('beforeunload', saveState);
 window.addEventListener('visibilitychange', ()=>{ if(document.hidden) saveState(); });
 
-//     START                                                                    
+// ─── START ───────────────────────────────────────────────────────────────────
 loadState(); renderCollabs(); renderProjectList(); renderPhases(); renderEntries();
 </script>
 </body>
 </html>
-
