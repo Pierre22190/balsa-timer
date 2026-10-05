@@ -257,14 +257,14 @@
         <span id="sync-status">Données sauvegardées localement</span>
       </div>
       <div style="display:flex;gap:8px;">
-        <button id="btn-sheets" onclick="exportToSheets()" style="padding:6px 14px;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;">Envoyer vers Google Sheets Envoyer vers Google Sheets</button>
+        <button id="btn-sheets" onclick="exportToSheets()" style="padding:6px 14px;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;">Envoyer vers Google Sheets</button>
         <button onclick="exportCSVAll()" style="padding:6px 12px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);font-size:11px;cursor:pointer;color:var(--ink-3);font-family:'Inter',sans-serif;">Export CSV</button>
       </div>
     </div>
   </div>
 </div>
 
-<button class="admin-trigger" onclick="openLogin()">Admin Admin</button>
+<button class="admin-trigger" onclick="openLogin()">Admin</button>
 
 <!-- SAISIE MANUELLE -->
 <div class="overlay" id="manual-overlay">
@@ -646,7 +646,7 @@ function renderEntries() {
       </div>
     </div>
     <div class="split-form" id="split-${i}">
-      <div class="split-title">Decouper Découper cette saisie de ${fmtDur(e.secs)}</div>
+      <div class="split-title">Découper cette saisie de ${fmtDur(e.secs)}</div>
       <div class="split-row"><label>Partie A (min)</label><input type="number" id="split-min-${i}" value="${Math.floor(e.secs/60/2)}" min="1" max="${Math.floor(e.secs/60)-1}" /></div>
       <div class="split-row"><label>Projet B</label>
         <select id="split-proj-${i}">${state.projects.map(p=>`<option value="${p}">${p}</option>`).join('')}</select>
@@ -800,13 +800,13 @@ async function exportToSheets() {
     btn.textContent = 'OK Envoyé !';
     btn.style.background = 'var(--green)';
     document.getElementById('sync-status').textContent = all.length + ' saisie(s) envoyée(s) vers Google Sheets — ' + new Date().toLocaleTimeString('fr-FR');
-    setTimeout(()=>{ btn.textContent = 'Envoyer vers Google Sheets Envoyer vers Google Sheets'; btn.style.background=''; btn.style.opacity='1'; btn.disabled=false; }, 2500);
+    setTimeout(()=>{ btn.textContent = 'Envoyer vers Google Sheets'; btn.style.background=''; btn.style.opacity='1'; btn.disabled=false; }, 2500);
   } else {
     btn.textContent = 'x Erreur — réessayer';
     btn.style.background = 'var(--red)';
     btn.style.opacity = '1';
     btn.disabled = false;
-    setTimeout(()=>{ btn.textContent = 'Envoyer vers Google Sheets Envoyer vers Google Sheets'; btn.style.background=''; }, 3000);
+    setTimeout(()=>{ btn.textContent = 'Envoyer vers Google Sheets'; btn.style.background=''; }, 3000);
   }
 }
 function openManual() {
@@ -948,10 +948,87 @@ function exportCSVAll() {
   a.click();
 }
 
-// ─── AUTO SAVE ───────────────────────────────────────────────────────────────
-setInterval(saveState, 30*60*1000);
+// ─── AUTO SAVE (local) ───────────────────────────────────────────────────────
+setInterval(saveState, 60*1000); // sauvegarde locale toutes les minutes
 window.addEventListener('beforeunload', saveState);
 window.addEventListener('visibilitychange', ()=>{ if(document.hidden) saveState(); });
+
+// ─── AUTO SYNC GOOGLE SHEETS ─────────────────────────────────────────────────
+// Clé pour éviter les doublons : on mémorise la date du dernier envoi auto
+function getLastAutoSync() {
+  try { return localStorage.getItem('balsa_last_auto_sync')||''; } catch(e){ return ''; }
+}
+function setLastAutoSync(dateStr) {
+  try { localStorage.setItem('balsa_last_auto_sync', dateStr); } catch(e){}
+}
+
+async function autoSyncToSheets(reason) {
+  // Récupérer toutes les saisies (aujourd'hui + historique)
+  let history = [];
+  try { history = JSON.parse(localStorage.getItem('balsa_history')||'[]'); } catch(e){}
+  const today = new Date().toDateString();
+  const todayEntries = state.entries;
+  const pastEntries = history.filter(e => new Date(e.timestamp).toDateString() !== today);
+  const all = [...todayEntries, ...pastEntries];
+  if(!all.length) return; // Rien à envoyer
+
+  const statusEl = document.getElementById('sync-status');
+  if(statusEl) statusEl.textContent = 'Synchronisation automatique en cours…';
+
+  const res = await sendToSheets(all);
+  const now = new Date().toLocaleTimeString('fr-FR');
+  if(res.ok) {
+    setLastAutoSync(new Date().toISOString());
+    if(statusEl) statusEl.textContent = 'Auto-sync OK (' + reason + ') — ' + all.length + ' saisie(s) — ' + now;
+  } else {
+    if(statusEl) statusEl.textContent = 'Auto-sync echoue (' + reason + ') — ' + now + ' — cliquez "Envoyer" manuellement';
+  }
+}
+
+// 1. Au démarrage : si pas encore envoyé aujourd'hui, envoyer
+window.addEventListener('load', ()=>{
+  const lastSync = getLastAutoSync();
+  const today = new Date().toDateString();
+  if(!lastSync || new Date(lastSync).toDateString() !== today) {
+    setTimeout(()=> autoSyncToSheets('démarrage'), 3000); // attendre 3s que la page soit prête
+  }
+});
+
+// 2. Toutes les 30 minutes : envoi silencieux en arrière-plan
+setInterval(()=> autoSyncToSheets('auto 30min'), 30*60*1000);
+
+// 3. Fermeture de page / mise en veille : dernier envoi de sécurité
+window.addEventListener('beforeunload', ()=>{
+  // sendBeacon est plus fiable que fetch au moment de fermer
+  let history = [];
+  try { history = JSON.parse(localStorage.getItem('balsa_history')||'[]'); } catch(e){}
+  const today = new Date().toDateString();
+  const all = [...state.entries, ...history.filter(e=>new Date(e.timestamp).toDateString()!==today)];
+  if(!all.length) return;
+  const rows = all.map(e=>{
+    const d = new Date(e.timestamp);
+    return [d.toLocaleDateString('fr-FR'),e.time||'(manuel)',e.collab,e.project,e.phase,Math.round(e.secs/60),fmtTime(e.secs),e.manual?'Manuelle':'Timer'].join('|');
+  }).join(';;');
+  const params = new URLSearchParams();
+  params.append('data', rows);
+  navigator.sendBeacon(SHEETS_URL, params);
+  saveState();
+});
+
+// 4. Quand l'onglet repasse en premier plan (retour sur la page après travail)
+let lastVisibilitySync = 0;
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden) {
+    saveState();
+  } else {
+    // Revenu sur la page : synchro si dernière sync > 30 min
+    const now = Date.now();
+    if(now - lastVisibilitySync > 30*60*1000) {
+      lastVisibilitySync = now;
+      setTimeout(()=> autoSyncToSheets('retour onglet'), 1000);
+    }
+  }
+});
 
 // ─── START ───────────────────────────────────────────────────────────────────
 loadState(); renderCollabs(); renderProjectList(); renderPhases(); renderEntries();
