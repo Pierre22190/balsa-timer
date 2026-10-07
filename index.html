@@ -84,6 +84,15 @@
   .assign-banner.show { display: block; }
   .assign-banner strong { font-weight: 600; }
 
+  /* JAUGE TEMPS VENDU */
+  .budget-gauge { display: none; margin-top: 8px; padding: 10px 12px; background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); font-family: 'Inter', sans-serif; }
+  .budget-gauge.show { display: block; }
+  .budget-gauge-label { font-size: 11px; color: var(--ink-3); display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .budget-gauge-track { width: 100%; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .budget-gauge-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width 0.2s; }
+  .budget-gauge-fill.warn { background: var(--orange); }
+  .budget-gauge-fill.over { background: var(--red); }
+
   /* ENTRIES */
   .entries-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow); }
   .entries-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
@@ -198,6 +207,10 @@
       <div class="project-list" id="project-list"></div>
       <div class="project-selected" id="project-selected"></div>
       <input type="text" class="search-input" id="new-project-input" placeholder="Nom du nouveau projet…" style="margin-top:6px;display:none;" />
+      <div class="budget-gauge" id="budget-gauge">
+        <div class="budget-gauge-label"><span id="budget-gauge-text">—</span><span id="budget-gauge-pct">0%</span></div>
+        <div class="budget-gauge-track"><div class="budget-gauge-fill" id="budget-gauge-fill" style="width:0%"></div></div>
+      </div>
     </div>
     <div class="separator"></div>
     <div>
@@ -408,6 +421,7 @@ const ADMIN_PWD = 'Pfcl1985';
 let state = {
   collabs:[...DEFAULT_COLLABS], archivedCollabs:[],
   projects:[...DEFAULT_PROJECTS], archivedProjects:[],
+  projectBudgets:{},
   entries:[], selectedCollab:null, selectedProject:null,
   selectedPhase:null, projectType:'complexe',
   running:false, startTime:null, elapsed:0, interval:null,
@@ -431,6 +445,7 @@ function loadState() {
       state.projects = mergedP;
     }
     if(s.archivedProjects) state.archivedProjects = s.archivedProjects;
+    if(s.projectBudgets) state.projectBudgets = s.projectBudgets;
     if(s.entries) {
       const today = new Date().toDateString();
       state.entries = s.entries.filter(e => new Date(e.timestamp).toDateString() === today);
@@ -443,6 +458,7 @@ function saveState() {
     localStorage.setItem('balsa_v2', JSON.stringify({
       collabs:state.collabs, archivedCollabs:state.archivedCollabs,
       projects:state.projects, archivedProjects:state.archivedProjects,
+      projectBudgets:state.projectBudgets,
       entries:state.entries
     }));
     document.getElementById('sync-status').textContent = 'Sauvegardé à ' + new Date().toLocaleTimeString('fr-FR');
@@ -499,7 +515,36 @@ function selectProject(p) {
   document.getElementById('project-list').style.display='none';
   document.getElementById('new-project-input').style.display='none';
   const sel=document.getElementById('project-selected'); sel.textContent=p; sel.style.display='block';
-  updateContext(); updateBanner();
+  updateContext(); updateBanner(); renderBudgetGauge();
+}
+
+// ─── JAUGE TEMPS VENDU / TEMPS PASSÉ ─────────────────────────────────────────
+// Temps passé = toutes les saisies (tous collaborateurs) du jour + de l'historique, pour ce projet.
+// Pas de montant € affiché, uniquement un pourcentage, conformément à la règle de confidentialité du taux horaire.
+function computeProjectSpentSecs(project) {
+  let history = [];
+  try { history = JSON.parse(localStorage.getItem('balsa_history') || '[]'); } catch(e){}
+  const today = new Date().toDateString();
+  const pastEntries = history.filter(e => new Date(e.timestamp).toDateString() !== today);
+  const all = [...state.entries, ...pastEntries];
+  return all.filter(e => e.project === project).reduce((sum, e) => sum + (e.secs || 0), 0);
+}
+function renderBudgetGauge() {
+  const el = document.getElementById('budget-gauge');
+  const project = state.selectedProject;
+  const budgetH = project ? state.projectBudgets[project] : null;
+  if (!project || !budgetH) { el.classList.remove('show'); return; }
+
+  const spentSecs = computeProjectSpentSecs(project);
+  const spentH = spentSecs / 3600;
+  const pct = Math.round((spentH / budgetH) * 100);
+
+  document.getElementById('budget-gauge-text').textContent = 'Temps passé / vendu';
+  document.getElementById('budget-gauge-pct').textContent = pct + '%';
+  const fill = document.getElementById('budget-gauge-fill');
+  fill.style.width = Math.min(pct, 100) + '%';
+  fill.className = 'budget-gauge-fill' + (pct >= 100 ? ' over' : pct >= 80 ? ' warn' : '');
+  el.classList.add('show');
 }
 document.getElementById('new-project-input').addEventListener('keydown',function(e){
   if(e.key==='Enter'&&this.value.trim()){
@@ -582,8 +627,8 @@ function stopTimer() {
   const secs=state.elapsed+Math.floor((Date.now()-state.startTime)/1000);
   state.elapsed=0;
   const now=new Date();
-  state.entries.push({collab:state.selectedCollab,project:state.selectedProject,phase:state.selectedPhase,secs,timestamp:now.toISOString(),time:pad(now.getHours())+':'+pad(now.getMinutes())});
-  saveState(); renderEntries();
+  state.entries.push({id:genId(),synced:false,collab:state.selectedCollab,project:state.selectedProject,phase:state.selectedPhase,secs,timestamp:now.toISOString(),time:pad(now.getHours())+':'+pad(now.getMinutes())});
+  saveState(); renderEntries(); renderBudgetGauge();
   document.getElementById('timer-display').textContent='00:00:00';
   document.getElementById('timer-display').classList.remove('running');
   document.getElementById('main-btn').textContent='Démarrer';
@@ -736,8 +781,22 @@ function renderAdminCollabs(){
 }
 function renderAdminProjects(){
   const d=document.getElementById('admin-projects'); d.innerHTML='';
-  state.projects.forEach((p,i)=>d.innerHTML+=`<div class="admin-item"><span>${p}</span><button class="btn-archive" onclick="archiveProject(${i})">Archiver</button></div>`);
+  state.projects.forEach((p,i)=>{
+    const budget = state.projectBudgets[p] || '';
+    d.innerHTML+=`<div class="admin-item"><span>${p}</span><span style="display:flex;align-items:center;gap:6px;">
+      <input type="number" min="0" step="0.5" value="${budget}" placeholder="h vendues" title="Temps vendu (heures)"
+        style="width:70px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;"
+        onchange="setProjectBudget('${p.replace(/'/g,"\\'")}', this.value)" />
+      <button class="btn-archive" onclick="archiveProject(${i})">Archiver</button></span></div>`;
+  });
   state.archivedProjects.forEach((p,i)=>d.innerHTML+=`<div class="admin-item admin-item-archived"><span>${p}</span><button class="btn-archive" onclick="restoreProject(${i})">Restaurer</button></div>`);
+}
+function setProjectBudget(project, hours){
+  const h = parseFloat(hours);
+  if(!h || h<=0) delete state.projectBudgets[project];
+  else state.projectBudgets[project] = h;
+  saveState();
+  renderBudgetGauge();
 }
 function archiveCollab(i){ state.archivedCollabs.push(state.collabs.splice(i,1)[0]); saveState(); renderAdminCollabs(); }
 function restoreCollab(i){ state.collabs.push(state.archivedCollabs.splice(i,1)[0]); saveState(); renderAdminCollabs(); }
@@ -747,6 +806,24 @@ function restoreProject(i){ state.projects.push(state.archivedProjects.splice(i,
 function adminAddProject(){ const v=document.getElementById('admin-new-project').value.trim(); if(v&&!state.projects.includes(v)){state.projects.push(v);saveState();renderAdminProjects();document.getElementById('admin-new-project').value='';} }
 
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyALrmQNM_Bb7bEc8bNqF4WiDEb_SQAiHFLizAhFSG-4POZWbts5PdzzUtfYvoeil7exQ/exec';
+
+// Identifiant unique pour chaque saisie, afin de ne jamais la renvoyer deux fois vers Sheets
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+// Marque les saisies envoyées comme synchronisées (dans state.entries ET dans l'historique)
+// pour que les prochains envois (auto ou manuel) ne les renvoient plus.
+function markSynced(sentEntries) {
+  const ids = new Set(sentEntries.map(e => e.id).filter(Boolean));
+  if (!ids.size) return;
+  state.entries.forEach(e => { if (ids.has(e.id)) e.synced = true; });
+  let history = [];
+  try { history = JSON.parse(localStorage.getItem('balsa_history') || '[]'); } catch(e){}
+  history.forEach(e => { if (ids.has(e.id)) e.synced = true; });
+  try { localStorage.setItem('balsa_history', JSON.stringify(history)); } catch(e){}
+  saveState();
+}
 
 // ─── EXPORT GOOGLE SHEETS ────────────────────────────────────────────────────
 async function sendToSheets(entries) {
@@ -791,15 +868,17 @@ async function exportToSheets() {
   const todayEntries = state.entries;
   const pastEntries = history.filter(e => new Date(e.timestamp).toDateString() !== today);
   const all = [...todayEntries, ...pastEntries];
-  if(!all.length){ alert('Aucune saisie à envoyer.'); return; }
+  const toSend = all.filter(e => !e.synced);
+  if(!toSend.length){ alert('Tout est déjà synchronisé avec Google Sheets.'); return; }
   btn.textContent = 'Envoi…';
   btn.disabled = true;
   btn.style.opacity = '0.7';
-  const res = await sendToSheets(all);
+  const res = await sendToSheets(toSend);
   if(res.ok) {
+    markSynced(toSend);
     btn.textContent = 'OK Envoyé !';
     btn.style.background = 'var(--green)';
-    document.getElementById('sync-status').textContent = all.length + ' saisie(s) envoyée(s) vers Google Sheets — ' + new Date().toLocaleTimeString('fr-FR');
+    document.getElementById('sync-status').textContent = toSend.length + ' saisie(s) envoyée(s) vers Google Sheets — ' + new Date().toLocaleTimeString('fr-FR');
     setTimeout(()=>{ btn.textContent = 'Envoyer vers Google Sheets'; btn.style.background=''; btn.style.opacity='1'; btn.disabled=false; }, 2500);
   } else {
     btn.textContent = 'x Erreur — réessayer';
@@ -856,6 +935,7 @@ function saveManualEntry() {
 
   const d = new Date(dateVal+'T12:00:00');
   const entry = {
+    id: genId(), synced: false,
     collab, project, phase, secs,
     timestamp: d.toISOString(),
     time: '(manuel)',
@@ -877,6 +957,7 @@ function saveManualEntry() {
 
   saveState();
   renderManualEntries();
+  renderBudgetGauge();
 
   // Reset durée pour saisie suivante
   document.getElementById('m-hours').value = 0;
@@ -970,16 +1051,18 @@ async function autoSyncToSheets(reason) {
   const todayEntries = state.entries;
   const pastEntries = history.filter(e => new Date(e.timestamp).toDateString() !== today);
   const all = [...todayEntries, ...pastEntries];
-  if(!all.length) return; // Rien à envoyer
+  const toSend = all.filter(e => !e.synced);
+  if(!toSend.length) return; // Rien de nouveau à envoyer
 
   const statusEl = document.getElementById('sync-status');
   if(statusEl) statusEl.textContent = 'Synchronisation automatique en cours…';
 
-  const res = await sendToSheets(all);
+  const res = await sendToSheets(toSend);
   const now = new Date().toLocaleTimeString('fr-FR');
   if(res.ok) {
+    markSynced(toSend);
     setLastAutoSync(new Date().toISOString());
-    if(statusEl) statusEl.textContent = 'Auto-sync OK (' + reason + ') — ' + all.length + ' saisie(s) — ' + now;
+    if(statusEl) statusEl.textContent = 'Auto-sync OK (' + reason + ') — ' + toSend.length + ' saisie(s) — ' + now;
   } else {
     if(statusEl) statusEl.textContent = 'Auto-sync echoue (' + reason + ') — ' + now + ' — cliquez "Envoyer" manuellement';
   }
@@ -1031,7 +1114,7 @@ document.addEventListener('visibilitychange', ()=>{
 });
 
 // ─── START ───────────────────────────────────────────────────────────────────
-loadState(); renderCollabs(); renderProjectList(); renderPhases(); renderEntries();
+loadState(); renderCollabs(); renderProjectList(); renderPhases(); renderEntries(); renderBudgetGauge();
 </script>
 </body>
 </html>
